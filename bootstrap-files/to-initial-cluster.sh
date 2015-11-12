@@ -1,7 +1,4 @@
-#!/bin/bash
-
-# Exit on error
-set -e
+##!/bin/bash
 
 #Initialize variables to default values.
 name=etcd

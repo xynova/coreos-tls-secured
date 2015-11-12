@@ -7,6 +7,7 @@ Vagrant.require_version ">= 1.6.0"
 
 
 # Defaults for config options defined in CONFIG
+
 $instance_IPs=["10.0.0.11","10.0.0.12","10.0.0.13"]
 #$instance_IPs=["10.0.0.11"]
 $instance_name_prefix = "etcd"

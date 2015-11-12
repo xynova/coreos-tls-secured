@@ -14,7 +14,7 @@ coreos:
     key-file: /etc/ssl/etcd/server-key.pem
     trusted-ca-file: /etc/ssl/certs/cluster-ca.pem
     peer-trusted-ca-file: /etc/ssl/certs/cluster-ca.pem
-    #initial-cluster-state: existing
+    #initial-cluster-state: new
   fleet:
     public-ip: $private_ipv4
   flannel:

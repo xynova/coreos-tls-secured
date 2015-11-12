@@ -1,6 +1,12 @@
-# Prepare necessary files
+# CoreOS secure cluster (made easy)
+I really like the CoreOS's concept of providing a pattern for managing container hosts. 
 
-##Build the Root CA
+
+
+## Preparing necessary files
+
+### Building cfssl Binary
+
 I am using [CloudFlare's PKI toolkit](https://cfssl.org/) to easily create all the necessary certificates
 for secure communications.
 
@@ -26,6 +32,8 @@ Once we are logged into a session, we can salute the Whale and then proceed to r
 ./build-cfssl.sh
 
 ```
+
+### Generating the Root CA
 
 Once the build process finishes creating all the binaries, we can exit the vagrant session and move back to our project directory. From here we can the execute **./cluster-files/gen-ca.sh** script to generate a Root CA certificate that will be later used to sign Server certificates for internal TSL cluster communications. 
 
