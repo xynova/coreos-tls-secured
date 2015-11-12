@@ -1,0 +1,41 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    proxy: on
+    listen-client-urls: http://127.0.0.1:2379
+    initial-cluster: core-01=https://172.17.8.101:2380
+    trusted-ca-file: /etc/ssl/certs/cluster-ca.pem
+    peer-trusted-ca-file: /etc/ssl/certs/cluster-ca.pem
+  flannel:
+    interface: $private_ipv4
+  units:
+    - name: etcd2.service
+      command: start
+      #drop-ins:
+      #  - name: 30-certificates.conf
+      #    content: |
+      #      [Service]
+            # Client Env Vars
+            #Environment=ETCD_CERT_FILE=/path/to/server.crt
+            #Environment=ETCD_KEY_FILE=/path/to/server.key
+            # Peer Env Vars
+            #Environment=ETCD_PEER_CERT_FILE=/path/to/peers.crt
+            #Environment=ETCD_PEER_KEY_FILE=/path/to/peers.key
+    - name: fleet.service
+      command: start
+    - name: flanneld.service
+      command: start
+    - name: prep-cluster-files.service
+      enable: true
+      content: |
+        [Unit]
+        Description=Copies necessary files to their final destination
+        Before=etcd2.service
+    
+        [Service]
+        ExecStartPre=/usr/bin/cp -f /mnt/cluster-files/ssl/ca.pem /etc/ssl/certs/cluster-ca.pem
+        ExecStart=/usr/sbin/update-ca-certificates
+
+        [Install]
+        RequiredBy=etcd2.service

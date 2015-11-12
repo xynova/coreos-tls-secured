@@ -1,0 +1,16 @@
+{
+    "CN": "Xynova Cluster CA ",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "AU",
+            "L": "Sydney",
+            "O": "Xynova",
+            "ST": "NSW",
+            "OU": "IT"
+        }
+    ]
+}

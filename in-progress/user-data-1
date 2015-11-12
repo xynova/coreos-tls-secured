@@ -1,0 +1,65 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    name: core-01
+    initial-cluster: core-01=https://172.17.8.101:2380
+    initial-advertise-peer-urls: https://$private_ipv4:2380
+    listen-peer-urls: https://$private_ipv4:2380
+    advertise-client-urls: https://$private_ipv4:2379
+    listen-client-urls: https://$private_ipv4:2379,http://127.0.0.1:2379,http://127.0.0.1:4001
+    peer-cert-file: /etc/ssl/etcd/server.pem
+    peer-key-file: /etc/ssl/etcd/server-key.pem
+    cert-file: /etc/ssl/etcd/server.pem
+    key-file: /etc/ssl/etcd/server-key.pem
+    trusted-ca-file: /etc/ssl/certs/cluster-ca.pem
+    peer-trusted-ca-file: /etc/ssl/certs/cluster-ca.pem
+  fleet:
+    public-ip: $private_ipv4
+  flannel:
+    interface: $private_ipv4
+  update:
+      reboot-strategy: etcd-lock
+  units:
+    - name: etcd2.service
+      command: start
+    - name: prep-cluster-files.service
+      enable: true
+      content: |
+        [Unit]
+        Description=Copies necessary files to their final destination
+        Before=etcd2.service
+    
+        [Service]
+        ExecStartPre=/usr/bin/cp /mnt/cluster-files/ssl/ca.pem /etc/ssl/certs/cluster-ca.pem
+        ExecStartPre=/bin/bash -c "mkdir -p /etc/ssl/etcd && cd /mnt/cluster-files/ssl \
+                    && cp `hostname`-server.pem /etc/ssl/etcd/server.pem \
+                    && cp `hostname`-server-key.pem /etc/ssl/etcd/server-key.pem"
+        ExecStartPre=/bin/bash -c "cd /etc/ssl/etcd && chown -R root:etcd . && chmod 0640 server-key.pem" 
+        ExecStart=/usr/sbin/update-ca-certificates
+
+        [Install]
+        RequiredBy=etcd2.service
+    - name: flanneld.service
+      command: start
+      drop-ins:
+        - name: 50-network-config.conf
+          content: |
+             [Service]
+             ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{ "Network": "10.1.0.0/16" }'
+    - name: fleet.service
+      command: start
+    - name: docker-tcp.socket
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        Description=Docker Socket for the API
+  
+        [Socket]
+        ListenStream=2375
+        Service=docker.service
+        BindIPv6Only=both
+  
+        [Install]
+        WantedBy=sockets.target

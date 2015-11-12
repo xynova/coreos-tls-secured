@@ -1,0 +1,22 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "dduportal/boot2docker"
+
+  # Share an additional folder to the guest VM. The first argument is
+  config.vm.synced_folder "../cluster-files/bin", "/mnt/build-outputs"
+
+  config.vm.provider "virtualbox" do |vb|
+     # Customize the amount of memory on the VM:
+     vb.memory = "2048"
+     vb.cpus  = "2"
+   end
+
+  config.vm.provision "shell", privileged: false, keep_color: true, inline: <<-SHELL
+        tce-load -wi bash
+        cp /vagrant/build-cfssl.sh /home/docker/
+        chmod +x /home/docker/build-cfssl.sh
+   SHELL
+end

@@ -1,0 +1,44 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    proxy: on
+    listen-client-urls: http://0.0.0.0:2379
+    initial-cluster: core-01=http://172.17.8.101:2380
+  fleet:
+    etcd_servers: "http://172.17.8.101:2379"
+  flannel:
+    interface: $public_ipv4
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: basic-mount-cifs.service
+      command: start
+      content: |
+        [Unit]
+        Description=Download basic mount.cifs binary
+        Documentation=https://github.com/xynova/docker-cifs-build
+        After=early-docker.service
+        Requires=early-docker.service
+        ConditionFileIsExecutable=!/opt/bin/mount.cifs
+
+        [Service]
+        TimeoutStartSec=0
+        Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
+        Environment="WORKDIR=/tmp/cifs-mount"
+        Environment="PKGADDR=quay.io/xynova/cifs-mount"
+        ExecStartPre=/bin/mkdir -p /opt/bin
+        ExecStartPre=/bin/mkdir -p /tmp/cifs-mount
+        ExecStartPre=/usr/bin/docker pull $PKGADDR
+        ExecStartPre=/usr/bin/docker create --name cifs $PKGADDR true
+        ExecStartPre=/usr/bin/docker export cifs | tar -x -C $WORKDIR
+        ExecStart=/usr/bin/docker rm cifs
+        ExecStop=/bin/rm -Rf $WORKDIR
+
+        [Install]
+        RequiredBy=docker.service
+        WantedBy=early-docker.target
+    - name: flanneld.service
+      command: start
