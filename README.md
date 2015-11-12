@@ -13,7 +13,7 @@ for secure communications.
  Let's jump into the **vagrant-builds** folder and build our binaries using Docker.
  
 ```shell
-# UP our boot2docker machine
+# Boot UP our boot2docker machine
 
 cd vagrant-builds
 vagrant up && vagrant ssh
@@ -48,4 +48,21 @@ cd ..
 
 * NOTE: You can customise the CA's fields by editing the **cluster-files/ca-csr.json** configuration file.*
 
-##Initialise a Vagrant CoreOS cluster
+##Initialise a CoreOS cluster
+
+### Vagrant etcd cluster
+
+The easiest way to start experimenting is by using the **vagrant-etcd** 3 machine cluster setup. Move into the vagrant-etc directory and boot the cluster UP. After all default machines come online, we can then ssh into one of them and do a sanity check by validating the cluster health with the **etcdctl cluster-health** command.
+
+
+```shell
+# Boot UP the vagrant cluster
+cd vagrant-etcd
+vagrant up
+
+# SSH into one of the machines and check the cluster health
+vagrant ssh etcd3
+etcdctl --debug cluster-health
+
+```
+
