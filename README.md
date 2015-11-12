@@ -1,7 +1,7 @@
 # CoreOS secure cluster (made easy)
-I really like the CoreOS's concept of providing a pattern for managing container hosts. 
+I really like the CoreOS's concept of providing a pattern for managing container hosts and trying to keep complexity down at the OS level. However, bootstrapping a cluster can become a tedious task, specially if you want to have your endpoints TLS secured.
 
-
+The following is the way I have managed to automate that process to allow me to easily run and destroy a TLS secured cluster as many times as it is required, without shedding a tear.
 
 ## Preparing necessary files
 
