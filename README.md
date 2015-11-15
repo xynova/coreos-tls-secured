@@ -20,7 +20,7 @@ vagrant up && vagrant ssh
 
 ```
 
-Once we are logged into a session, we can salute the Whale and then proceed to run the **~/build-cfssl.sh script**. This will fetch the cfssl source code, build the binaries and copy them back to our project under the **./cluster-files/bin** directory.
+Once we are logged into a session, we can salute the Whale and then proceed to run the **~/build-cfssl.sh script**. This will fetch the cfssl source code, build the required binaries and automatically copy them back to our project under the **./cluster-files/bin** directory.
 
 * NOTE: Do not do this on your mobile data plan as the build requires a golang docker image that is around 1GB in size.*
 
@@ -29,24 +29,24 @@ Once we are logged into a session, we can salute the Whale and then proceed to r
 # If you have some pending reading or tweeting to do, this is a good 
 # time to look into that because this will take a while.
 
-./build-cfssl.sh
+cd ~ && ./build-cfssl.sh
 
 ```
 
 ### Generating the Root CA
 
-Once the build process finishes creating all the binaries, we can exit the vagrant session and move back to our project directory. From here we can the execute **./cluster-files/gen-ca.sh** script to generate a Root CA certificate that will be later used to sign Server certificates for internal TSL cluster communications. 
+Within the same boot2docker session, we can execute the **~/generate-ca.sh** to quickly create our Root CA certificates. These will be then used later on to automatically sign additional certificates for internal cluster TSL communications. 
+
+These certificates will be automatically copied back to the host under the **./cluster-files/ssl** directory.
 
 ```shell
-# Exit the vagrant session 
-# jump to the project directory
-# and use cfssl to build the Root CA
+# Within the same vagrant session we execute the following
+# ... too easy
 
-cd ..
-./cluster-files/gen-ca.sh
+cd ~ && ./generate-ca.sh
 ```
 
-* NOTE: You can customise the CA's fields by editing the **cluster-files/ca-csr.json** configuration file.*
+* NOTE: You can customise the CA's fields by editing the **~/ca-csr.json** certificate request file within the boot2docker session or at its source location **./cluster-files/ca-csr.json** in the project folder on the host.
 
 ##Initialise a CoreOS cluster
 
