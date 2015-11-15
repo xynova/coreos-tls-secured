@@ -1,4 +1,6 @@
-# exit on any errors
+#!/bin/bash
+
+# Exit on error
 set -e
 
 # download cfssl source code
