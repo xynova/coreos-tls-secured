@@ -54,6 +54,7 @@ cd ~ && ./generate-ca.sh
 
 The easiest way to start experimenting is by using the **vagrant-etcd** 3 machine cluster setup. Move into the vagrant-etc directory and boot the cluster UP. After all default machines come online, we can then ssh into one of them and do a sanity check by validating the cluster health with the **etcdctl cluster-health** command.
 
+* NOTE for Windows users: you might have to install the vagrant-winnfsd plugin (NFS support for Windows hosts). Find this and other [available plugins here](https://github.com/mitchellh/vagrant/wiki/Available-Vagrant-Plugins).
 
 ```shell
 # Boot UP the vagrant cluster
