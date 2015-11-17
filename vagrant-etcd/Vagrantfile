@@ -43,7 +43,8 @@ Vagrant.configure("2") do |config|
 
     $script = <<SCRIPT
     x=$1
-    y=$(/tmp/to-initial-cluster.sh $2)
+    tr -d "\015" < /tmp/to-initial-cluster.sh > /tmp/tic.sh && chmod +x /tmp/tic.sh
+    y=$(/tmp/tic.sh $2)
     sed -e "s#<MEMBER-NAME>\#$x#;s#<INITIAL-CLUSTER>\#$y#;" /tmp/etcd-template.yaml > /tmp/vagrantfile-user-data
     mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
 SCRIPT
