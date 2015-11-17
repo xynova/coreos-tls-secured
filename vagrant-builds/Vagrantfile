@@ -7,28 +7,32 @@ Vagrant.configure(2) do |config|
   config.vm.box = "AlbanMontaigu/boot2docker"
 
   # Shared folders
-  config.vm.synced_folder "../cluster-files/bin", "/mnt/build-outputs"
-  config.vm.synced_folder "../cluster-files/ssl", "/mnt/ssl-outputs"
-  config.vm.synced_folder "../cluster-files", "/mnt/ssl-config"
+  config.vm.synced_folder "../cluster-files", "/mnt/cluster-files"
 
   config.vm.provider "virtualbox" do |vb|
-     vb.memory = "2048"
+     vb.memory = "1500"
      vb.cpus  = "2"
    end
 
   config.vm.provision "shell", privileged: false, keep_color: true, inline: <<-SHELL
         # Install bash
         tce-load -wi bash
-         
-        # Replace CR when mounting mounting from windows
-        tr -d "\015" < /vagrant/build-cfssl.sh > ~/build-cfssl.sh
-        tr -d "\015" < /vagrant/generate-ca.sh > ~/generate-ca.sh
-	    
-        # do some links
-	    ln -s /mnt/ssl-config/ca-config.json ~/ca-config.json 
-	    ln -s /mnt/ssl-config/ca-csr.json ~/ca-csr.json 
-	    
-	    # Make executable
-        chmod +x ~/build-cfssl.sh ~/generate-ca.sh
+
+        # SSL BUILD CONFIG
+            mkdir ~/prep-ssl
+
+            # Replace CR when mounting mounting from windows
+            tr -d "\015" < /vagrant/prep-ssl/build-cfssl.sh > ~/prep-ssl/build-cfssl.sh
+            tr -d "\015" < /vagrant/prep-ssl/generate-ca.sh > ~/prep-ssl/generate-ca.sh
+            
+            # do some links
+            ln -s /mnt/cluster-files/ca-config.json ~/prep-ssl/ca-config.json 
+            ln -s /mnt/cluster-files/ca-csr.json ~/prep-ssl/ca-csr.json 
+            
+            # Make executable
+            chmod +x ~/prep-ssl/build-cfssl.sh ~/prep-ssl/generate-ca.sh
+
+        # AZURE BUILD CONFIG
+        
    SHELL
 end
