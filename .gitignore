@@ -16,3 +16,4 @@ Session.vim
 ### Files ###
 cluster-files/ssl/*
 cluster-files/bin/*
+*.publishsettings
