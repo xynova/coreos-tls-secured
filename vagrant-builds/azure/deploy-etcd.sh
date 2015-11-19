@@ -4,5 +4,6 @@
 cd /vagrant/azure && docker run -ti --rm --name azure \
 -v $(ls | grep -i *publishsettings | sed -e "s|^|`pwd`/|g"):/credentials \
 -v /mnt/cluster-files:/cluster-files \
+-v /mnt/bootstrap-files:/bootstrap-files \
 microsoft/azure-cli /bin/bash -c "azure account import credentials;/bin/bash"
 

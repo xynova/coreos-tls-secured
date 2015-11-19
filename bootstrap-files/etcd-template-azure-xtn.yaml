@@ -8,6 +8,8 @@
         ConditionFileIsExecutable=!/opt/bin/mount.cifs
 
         [Service]
+        Type=oneshot
+        RemainAfterExit=yes
         TimeoutStartSec=0
         Environment="WORKDIR=/tmp/cifs-mount"
         Environment="BINDIR=/opt/bin"
@@ -23,4 +25,22 @@
         
         [Install]
         WantedBy=multi-user.target
-        RequiredBy=docker.service
+        RequiredBy=mount-cluster-files.service
+    - name: mount-cluster-files.service 
+      enable: true
+      content: |
+        [Unit]
+        Description=cluster-files share mount
+        After=basic-mount-cifs.service
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        Environment=STORAGEACC=etcdsydstore
+        Environment=STORAGEKEY=0whzKJ8XZfbMhd1B+bdTga5V8ohwv28HbfbxCg121k3i0nd/oqqNGZfR7jJfM3xAujVZkY0BZMhsQCmalB75KQ==
+        Environment=STORAGEPATH=//etcdsydstore.file.core.windows.net/cluster-files
+        ExecStartPre=/bin/mkdir -p /mnt/cluster-files
+        ExecStart=/opt/bin/mount.cifs -o vers=2.1,username=${STORAGEACC},password=${STORAGEKEY},dir_mode=0777,file_mode=0777 ${STORAGEPATH} /mnt/cluster-files
+
+        [Install]
+        RequiredBy=cluster-member-ssl.service
