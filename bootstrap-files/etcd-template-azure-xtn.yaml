@@ -32,6 +32,7 @@
         [Unit]
         Description=cluster-files share mount
         After=basic-mount-cifs.service
+        Before=cluster-member-ssl.service
 
         [Service]
         Type=oneshot
