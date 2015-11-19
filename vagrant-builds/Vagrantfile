@@ -21,19 +21,11 @@ Vagrant.configure(2) do |config|
         # SSL BUILD CONFIG
             mkdir ~/prep-ssl ~/azure
 
-            # Replace CR when mounting mounting from windows
-            tr -d "\015" < /vagrant/prep-ssl/build-cfssl.sh > ~/prep-ssl/build-cfssl.sh
-            tr -d "\015" < /vagrant/prep-ssl/generate-ca.sh > ~/prep-ssl/generate-ca.sh
-            tr -d "\015" < /vagrant/azure/deploy-etcd.sh > ~/azure/deploy-etcd.sh
-            
             # do some links
-            ln -s /mnt/cluster-files/ca-config.json ~/prep-ssl/ca-config.json 
-            ln -s /mnt/cluster-files/ca-csr.json ~/prep-ssl/ca-csr.json 
+            ln -s /mnt/cluster-files/*.json ~/prep-ssl/ 
+	    ln -s /vagrant/prep-ssl/* ~/prep-ssl/
+	    ln -s /vagrant/azure/* ~/azure/
             
-            # Make executable
-            chmod +x ~/prep-ssl/build-cfssl.sh ~/prep-ssl/generate-ca.sh
-            chmod +x ~/azure/deploy-etcd.sh
-
         # AZURE BUILD CONFIG
         
    SHELL
