@@ -1,0 +1,7 @@
+# Set the default behaviour
+* text=auto
+
+# Explicitly set files taht will have end of line conversion
+*.sh text eol=lf
+*.json text eol=lf
+
