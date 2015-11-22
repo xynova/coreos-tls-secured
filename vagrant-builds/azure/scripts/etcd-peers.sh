@@ -10,8 +10,8 @@ azure service create --serviceName $CLOUD_SERVICE --location "$LOCATION"
 # Prepare metadata
 storagename=${CLOUD_SERVICE}store
 storagekey=$(azure storage account keys list etcdsydstore | grep -i Primary | cut -d':' -f3 | sed -e 's# ##')
-storagepath=`echo $(azure storage account show $storagename --json | grep ${storagename}.file | cut -d'"' -f2)"cluster-files" | sed -e 's#https:##'`
-blobpath=$(azure storage account show $storagename --json | grep ${storagename}.blob | cut -d'"' -f2)"vhd"
+storagepath=$(azure storage account show $storagename --json | grep ${storagename}.file | cut -d'"' -f2 | sed -e 's#https:##' | awk '{ print $1"cluster-files" }')
+blobpath=$(azure storage account show $storagename --json | grep ${storagename}.blob | cut -d'"' -f2 | awk '{ print $1"vhd" }' )
 initialcluster=$(./bootstrap-files/to-initial-cluster.sh -n $VM_PREFIX ${VM_IPS[@]})
 cat /bootstrap-files/etcd-template.yaml /bootstrap-files/etcd-template-azure-xtn.yaml > /tmp/etcd-template.yaml
 
