@@ -6,5 +6,5 @@ cd /vagrant/azure && docker run -ti --rm \
 -v /mnt/cluster-files:/cluster-files \
 -v /mnt/bootstrap-files:/bootstrap-files \
 -v /vagrant/azure/scripts:/tmp/deploy \
-microsoft/azure-cli /bin/bash -c "cat /tmp/credentials | tr -d '\015' > credentials; azure account import credentials;./tmp/deploy/etcd-destroy-all.sh"
+microsoft/azure-cli /bin/bash -c "cat /tmp/credentials | tr -d '\015' > credentials; azure account import credentials;./tmp/deploy/etcd-destroy-net.sh"
 

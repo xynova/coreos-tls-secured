@@ -4,4 +4,4 @@
 # Explicitly set files taht will have end of line conversion
 *.sh text eol=lf
 *.json text eol=lf
-
+*.conf text eol=lf
