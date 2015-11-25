@@ -63,3 +63,32 @@ etcdctl --debug cluster-health
 
 ### Azure Cloud TLS etcd cluster
 
+To deploy an etcd cluster in Azure, I brought in two other tools: the cross platform **azure-cli** (which is run in a docker instance) and the **Azure SMB File Share** service (serving as shared cluster mounted storage).
+
+The first thing we need to do is to download a **.publishsettings** file that can enable us to perform operations against our Azure account. This can be downloaded from the following link: [http://go.microsoft.com/fwlink/?LinkId=254432](http://go.microsoft.com/fwlink/?LinkId=254432). Copy the downloaded file into the **vagrant-builds/azure** project sub-directory so it can be picked up by the Boot2Docker vagrant session (same one we used to build the cfssl tool).
+
+Now lets log into the Boot2Docker Vagrant session in the **vagrant-builds** directory. Before running the deployment script we can edit some basic configuration values that will be used to deploy all the cloud resources (specially if you want to choose your own username and password for the VMs in the cluster): **vi ~/azure/scripts/etcd.conf**.
+
+Then all left to do is to execute the deployment script: **~/azure/azure-deploy-etcd.sh**
+This script will load the .publishsettings file into an azure-cli session and do the following:
+
+* Create a virtual network
+* Create an Azure SMB File Share and deploy cert files and cfssl binaries into it
+* Create the VMs with the correct cloud-init configured systemd units.
+
+NOTE: if you want to SSH into the etcd VMs you have to **create a public ssh endpoint** into one of them or do as I usually do: **create a separate VM with a public ssh endpoint** that serve as a gateway into private Virtual Network.
+
+```shell
+# Boot UP our boot2docker machine after copying the .publishsettings
+# file into the vagrant-builds/azure directory
+cd vagrant-builds
+vagrant up && vagrant ssh
+
+# Edit username and password for the VMs
+vi ~/azure/scripts/etcd.conf
+
+# Deploy the cluster resources to Azure
+cd ~/azure
+./azure-deploy-etcd.sh
+
+```
