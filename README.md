@@ -92,3 +92,5 @@ cd ~/azure
 ./azure-deploy-etcd.sh
 
 ```
+
+[![Feature Requests](http://feathub.com/xynova/coreos-tls-secured?format=svg)](http://feathub.com/xynova/coreos-tls-secured)
